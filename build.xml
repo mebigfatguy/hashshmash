@@ -1,6 +1,6 @@
 <!--
 /*
- * hashshmash - A unused methods detector
+ * hashshmash - An aspectj project to evaluate hashCode() distribution effectiveness
  * Copyright 2013 MeBigFatGuy.com
  * Copyright 2013 Dave Brosius
  *
@@ -36,15 +36,14 @@
     <property name="sonatype.dir" value="${user.home}/.hashshmash-${hashshmash.version}-sonatype" />
 
     <property name="yank.version" value="0.2.0"/>
-    <property name="junit.version" value="4.11"/>
 
     <path id="hashshmash.classpath">
-        <pathelement location="${lib.dir}/junit-${junit.version}.jar"/>
+        <pathelement location="${lib.dir}/junit.jar"/>
     </path>
     
     <path id="hashshmash.test.classpath">
         <pathelement location="${classes.dir}"/>
-        <pathelement location="${lib.dir}/junit-${junit.version}.jar"/>
+        <pathelement location="${lib.dir}/junit.jar"/>
     </path>
     
     <path id="hashshmash.classes.classpath">
