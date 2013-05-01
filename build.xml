@@ -1,0 +1,165 @@
+<!--
+/*
+ * hashshmash - A unused methods detector
+ * Copyright 2013 MeBigFatGuy.com
+ * Copyright 2013 Dave Brosius
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+
+<project name="hashshmash" default="build">
+
+    <property file="build.properties"/>
+
+    <property name="src.dir" value="${basedir}/src"/>
+    <property name="samples.dir" value="${basedir}/samples"/>
+    <property name="classes.dir" value="${basedir}/classes"/>
+    <property name="lib.dir" value="${basedir}/lib"/>
+    <property name="javadoc.dir" value="${basedir}/javadoc"/>
+    <property name="javac.source" value="1.6"/>
+    <property name="javac.target" value="1.6"/>
+    <property name="javac.deprecation" value="on"/>
+    <property name="javac.debug" value="on"/>
+    
+    <property name="hashshmash.version" value="0.1.0"/>
+    <property name="sonatype.dir" value="${user.home}/.hashshmash-${hashshmash.version}-sonatype" />
+
+    <property name="yank.version" value="0.2.0"/>
+    <property name="junit.version" value="4.11"/>
+
+    <path id="hashshmash.classpath">
+        <pathelement location="${lib.dir}/junit-${junit.version}.jar"/>
+    </path>
+    
+    <path id="hashshmash.test.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${lib.dir}/junit-${junit.version}.jar"/>
+    </path>
+    
+    <path id="hashshmash.classes.classpath">
+        <pathelement location="${classes.dir}"/>
+    </path>
+    
+    <target name="clean" description="removes all generated collateral">
+        <delete dir="${classes.dir}"/>
+        <delete dir="${javadoc.dir}"/>
+        <delete file="${basedir}/hashshmash-${hashshmash.version}.jar"/>
+        <delete file="${basedir}/hashshmash-${hashshmash.version}-sources.jar"/>
+    </target>
+
+    <target name="-init" description="prepares repository for a build">
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+        <mkdir dir="${javadoc.dir}"/>
+    	<get src="http://repo1.maven.org/maven2/com/mebigfatguy/yank/yank/${yank.version}/yank-${yank.version}.jar" dest="${lib.dir}/yank-${yank.version}.jar"/>
+    </target>
+
+    <target name="yank" depends="-init" description="pull 3rdparty jars to the lib directory">
+    	<taskdef name="yank" classname="com.mebigfatguy.yank.YankTask" classpath="${lib.dir}/yank-${yank.version}.jar"/>
+        <yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" reportMissingDependencies="true" source="true">
+            <server url="http://repo1.maven.org/maven2"/>
+        </yank>
+	</target>
+    
+    <target name="compile" depends="-init, yank" description="compiles java files">
+        <javac srcdir="${src.dir}"
+                destdir="${classes.dir}"
+                source="${javac.source}"
+                target="${javac.target}"
+                deprecation="${javac.deprecation}"
+                debug="${javac.debug}"
+                includeantruntime="true">
+            <classpath refid="hashshmash.classpath"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile" description="produces the hashshmash jar file">
+        <jar destfile="${basedir}/hashshmash-${hashshmash.version}.jar">
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+            <manifest>
+                <attribute name="hashshmash-version" value="${hashshmash.version}"/>
+                <attribute name="Bundle-ManifestVersion" value="2"/>
+                <attribute name="Bundle-Name" value="hashshmash ant task"/>
+                <attribute name="Bundle-SymbolicName" value="hashshmash; singleton:=true"/>
+                <attribute name="Bundle-Version" value="${hashshmash.version}"/>               
+                <attribute name="Bundle-ClassPath" value="."/>
+                <attribute name="Bundle-Vendor" value="hashshmash Project"/>
+                <attribute name="Bundle-ActivationPolicy" value="lazy"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="srczip" description="builds the source distribution zip file">
+        <zip destfile="${basedir}/hashshmash-${hashshmash.version}-sources.jar" basedir="${basedir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+                <include name="**/*.license"/>
+                <include name="lib/*.jar"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="javadoc" depends="-init" description="build the javadoc for the project">
+        <javadoc packagenames="com.mebigfatguy.*"
+                 sourcepath="${src.dir}"
+                 classpathref="hashshmash.classpath"
+                 destdir="${javadoc.dir}"
+                 windowtitle="hashshmash api">
+            <doctitle><![CDATA[<h1>fb-contrib javadoc</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2013 MeBigFatGuy.com. All Rights Reserved.</i>]]></bottom>
+        </javadoc>
+    </target>
+
+    <target name="build" depends="clean, -init, compile, jar" description="builds the hashshmash jar">
+    </target>
+
+    <target name="release" depends="build, srczip, javadoc" description="prepares everything for a release"/>
+    
+    <target name="sonatype" depends="release" description="prepare an artifact bundle for sonatype">
+        <mkdir dir="${sonatype.dir}"/>
+        <copy todir="${sonatype.dir}" file="${basedir}/hashshmash-${hashshmash.version}.jar"/>
+        <copy tofile="${sonatype.dir}/hashshmash-${hashshmash.version}-sources.jar" file="${basedir}/hashshmash-${hashshmash.version}-sources.jar"/>
+        <jar destfile="${sonatype.dir}/hashshmash-${hashshmash.version}-javadoc.jar" basedir="${basedir}" includes="javadoc/**"/>
+        <copy tofile="${sonatype.dir}/hashshmash-${hashshmash.version}.pom" file="${basedir}/pom.xml"/>
+        
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/hashshmash-${hashshmash.version}.jar" />
+        </exec>
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/hashshmash-${hashshmash.version}.pom" />
+        </exec>
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/hashshmash-${hashshmash.version}-sources.jar" />
+        </exec>        
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/hashshmash-${hashshmash.version}-javadoc.jar" />
+        </exec>
+        <jar destfile="${sonatype.dir}/bundle.jar" basedir="${sonatype.dir}" includes="hashshmash*">
+        </jar>
+        <echo message="" />
+        <echo message="" />
+        <echo message="====================================================================================================================================" />
+        <echo message="sonatype update bundle produced at ${sonatype.dir}/bundle.jar" />
+        <echo message="upload this jar at https://oss.sonatype.org" />
+        <echo message="" />
+        <echo message="see link for details-> https://docs.sonatype.org/display/Repository/Uploading+3rd-party+Artifacts+to+The+Central+Repository" />
+        <echo message="====================================================================================================================================" />
+    </target>
+</project>
