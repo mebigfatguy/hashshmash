@@ -18,11 +18,12 @@
  */
 -->
 
-<project name="hashshmash" default="build">
+<project xmlns:aspectj="antlib:org.aspectj" name="hashshmash" default="build">
 
     <property file="build.properties"/>
 
     <property name="src.dir" value="${basedir}/src"/>
+    <property name="aj.dir" value="${basedir}/aj"/>
     <property name="samples.dir" value="${basedir}/samples"/>
     <property name="classes.dir" value="${basedir}/classes"/>
     <property name="lib.dir" value="${basedir}/lib"/>
@@ -39,15 +40,6 @@
 
     <path id="hashshmash.classpath">
         <pathelement location="${lib.dir}/junit.jar"/>
-    </path>
-    
-    <path id="hashshmash.test.classpath">
-        <pathelement location="${classes.dir}"/>
-        <pathelement location="${lib.dir}/junit.jar"/>
-    </path>
-    
-    <path id="hashshmash.classes.classpath">
-        <pathelement location="${classes.dir}"/>
     </path>
     
     <target name="clean" description="removes all generated collateral">
@@ -70,23 +62,17 @@
             <server url="http://repo1.maven.org/maven2"/>
         </yank>
 	</target>
-    
+<!--    
     <target name="compile" depends="-init, yank" description="compiles java files">
-        <javac srcdir="${src.dir}"
-                destdir="${classes.dir}"
-                source="${javac.source}"
-                target="${javac.target}"
-                deprecation="${javac.deprecation}"
-                debug="${javac.debug}"
-                includeantruntime="true">
-            <classpath refid="hashshmash.classpath"/>
-        </javac>
+    	<aspectj:iajc source="1.6" sourceroots="${aj.dir}" destDir="${classes.dir}" classpath="${lib.dir}/aspectjrt.jar">
+    	</aspectj:iajc>
     </target>
+-->
 
-    <target name="jar" depends="compile" description="produces the hashshmash jar file">
+    <target name="jar" depends="-init, yank" description="produces the hashshmash jar file">
         <jar destfile="${basedir}/hashshmash-${hashshmash.version}.jar">
-            <fileset dir="${classes.dir}">
-                <include name="**/*.class"/>
+            <fileset dir="${aj.dir}">
+                <include name="**/*.aj"/>
             </fileset>
             <manifest>
                 <attribute name="hashshmash-version" value="${hashshmash.version}"/>
@@ -103,8 +89,8 @@
 
     <target name="srczip" description="builds the source distribution zip file">
         <zip destfile="${basedir}/hashshmash-${hashshmash.version}-sources.jar" basedir="${basedir}">
-            <fileset dir="${src.dir}">
-                <include name="**/*.java"/>
+            <fileset dir="${aj.dir}">
+                <include name="**/*.aj"/>
                 <include name="**/*.license"/>
                 <include name="lib/*.jar"/>
             </fileset>
@@ -122,7 +108,7 @@
         </javadoc>
     </target>
 
-    <target name="build" depends="clean, -init, compile, jar" description="builds the hashshmash jar">
+    <target name="build" depends="clean, -init, jar" description="builds the hashshmash jar">
     </target>
 
     <target name="release" depends="build, srczip, javadoc" description="prepares everything for a release"/>

@@ -1,7 +1,9 @@
 package com.mebigfatguy.hashshmash;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.aspectj.lang.Signature;
@@ -9,33 +11,49 @@ import org.aspectj.lang.Signature;
 public aspect HashCollector {
 
     private static final int SLEEP_TIME = 10 * 1000;
-    private static ConcurrentHashMap<HashMapDetails, HashMapDetails> hmDetails = new ConcurrentHashMap<HashMapDetails, HashMapDetails>();
+    private static Field TABLE_FIELD;
+    private static ConcurrentHashMap<HashMapDetails, HashMapDetails> HM_DETAILS = new ConcurrentHashMap<HashMapDetails, HashMapDetails>();
     
     static {
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    while (!Thread.interrupted()) {
-                        Thread.sleep(SLEEP_TIME);
-                        
-                        for (HashMapDetails details : hmDetails.keySet()) {
-                            try {
-                                int newSize = details.map.size();
-                                if (newSize == details.size) {
-                                    //TODO: HashMap hasn't changed size for a while report and release reference
-                                    hmDetails.remove(details);
+        try {
+            TABLE_FIELD = HashMap.class.getDeclaredField("table");
+            TABLE_FIELD.setAccessible(true);
+            
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        while (!Thread.interrupted()) {
+                            Thread.sleep(SLEEP_TIME);
+                            
+                            for (HashMapDetails details : HM_DETAILS.keySet()) {
+                                try {
+                                    if (details.map != null) {
+                                        int newSize = details.map.size();
+                                        if (newSize == details.size) {
+                                            Entry<?, ?>[] table = (Entry<?, ?>[])TABLE_FIELD.get(details.map);
+                                            details.totalSlots = table.length;
+                                            for (Entry<?, ?> e : table) {
+                                                if (e != null) {
+                                                    details.usedSlots++;
+                                                }
+                                            }
+                                            details.map = null;
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    //might get ConcurrentModificationException or such, just ignore
                                 }
-                            } catch (Exception e) {
-                                //might get ConcurrentModificationException or such, just ignore
                             }
                         }
+                    } catch (InterruptedException ie) {    
                     }
-                } catch (InterruptedException ie) {    
                 }
-            }
-        });
-        t.setDaemon(true);
-        t.start();
+            });
+            t.setDaemon(true);
+            t.start();
+        } catch (Exception e) {
+            
+        }
     }
     
     after() returning (Map m): call(HashMap.new(..)) {
@@ -43,7 +61,7 @@ public aspect HashCollector {
         int line = thisJoinPointStaticPart.getSourceLocation().getLine();
         
         HashMapDetails details = new HashMapDetails(m, System.currentTimeMillis(), sig + ":" + line);
-        hmDetails.put(details,  details);
+        HM_DETAILS.put(details,  details);
     }
     
     class HashMapDetails {
@@ -58,5 +76,7 @@ public aspect HashCollector {
         public long allocTime;
         public String caller;
         public int size;
+        public int usedSlots;
+        public int totalSlots;
     }
 }
