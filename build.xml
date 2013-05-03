@@ -103,7 +103,7 @@
                  classpathref="hashshmash.classpath"
                  destdir="${javadoc.dir}"
                  windowtitle="hashshmash api">
-            <doctitle><![CDATA[<h1>fb-contrib javadoc</h1>]]></doctitle>
+            <doctitle><![CDATA[<h1>hashshmash javadoc</h1>]]></doctitle>
             <bottom><![CDATA[<i>Copyright &#169; 2013 MeBigFatGuy.com. All Rights Reserved.</i>]]></bottom>
         </javadoc>
     </target>
