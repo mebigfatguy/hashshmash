@@ -9,8 +9,10 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public aspect HashCollector {
@@ -25,6 +27,14 @@ public aspect HashCollector {
         journaller.add(details);
     }
     
+    after() returning (Set s): call(HashSet.new(..)) {
+        String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
+        int line = thisJoinPointStaticPart.getSourceLocation().getLine();
+        
+        HashSetDetails details = new HashSetDetails(s, new Date(), fileName + ":" + line);
+        journaller.add(details);
+    }
+    
     before(): execution(public static void *.main(String[])) {
         Class<?> c = HashCollector.class;
     }
@@ -32,20 +42,17 @@ public aspect HashCollector {
 
 final class Journaller implements Runnable {
     
-    private static final int SLEEP_TIME = 10 * 1000;
+    private static final int SLEEP_TIME = 5 * 1000;
     
     private Field tableField;
-    private ConcurrentHashMap<HashMapDetails, HashMapDetails> hmDetails = new ConcurrentHashMap<HashMapDetails, HashMapDetails>();
+    private ConcurrentHashMap<HashDetails, HashDetails> hDetails = new ConcurrentHashMap<HashDetails, HashDetails>();
     private PrintWriter writer;
-    private SimpleDateFormat formatter;
 
     public Journaller() {
         try {
-            
             tableField = HashMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
               
-            formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             File dir = new File(System.getProperty("user.home"), ".hashshmash");
             dir.mkdirs();  
             
@@ -58,8 +65,8 @@ final class Journaller implements Runnable {
         }
     }
     
-    public void add(HashMapDetails details) {
-        hmDetails.put(details,  details);
+    public void add(HashDetails details) {
+        hDetails.put(details,  details);
     }
     
     public void run() {
@@ -67,21 +74,25 @@ final class Journaller implements Runnable {
             while (!Thread.interrupted()) {
                 Thread.sleep(SLEEP_TIME);
                 
-                for (HashMapDetails details : hmDetails.keySet()) {
+                for (HashDetails details : hDetails.keySet()) {
                     try {
-                        int newSize = details.map.size();
-                        if (newSize == details.size) {
-                            Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(details.map);
-                            details.totalSlots = table.length;
-                            for (Entry<?, ?> e : table) {
-                                if (e != null) {
-                                    details.usedSlots++;
+                        Map<?, ?> map = details.getMap();
+                        if (map != null) {
+                            int newSize = details.getMap().size();
+                            if (newSize == details.size) {
+                                Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(map);
+                                details.totalSlots = table.length;
+                                for (Entry<?, ?> e : table) {
+                                    if (e != null) {
+                                        details.usedSlots++;
+                                    }
                                 }
-                            }
-                            writer.println(formatter.format(details.allocTime) + "\t" + details.caller + "\t" + details.map.size() + "\t" + details.totalSlots + "\t" + details.usedSlots);
-                            hmDetails.remove(details);
+                                writer.println(details);
+                                hDetails.remove(details);
+                            } else
+                                details.size = newSize;
                         } else {
-                            details.size = newSize;
+                            hDetails.remove(details);
                         }
                     } catch (Exception e) {
                         //might get ConcurrentModificationException or such, just ignore
@@ -94,18 +105,75 @@ final class Journaller implements Runnable {
     }
 }
 
-class HashMapDetails {
-    public Map<?, ?> map;
+abstract class HashDetails {
+    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    
     public Date allocTime;
     public String caller;
     public int size;
     public int usedSlots;
     public int totalSlots;
+    
+    public abstract Map<?,?> getMap();
+    
+    public abstract String getDetailType();
+    
+    public String toString() {
+        return getDetailType() + "\t" + FORMATTER.format(allocTime) + "\t" + caller + "\t" + getMap().size() + "\t" + totalSlots + "\t" + usedSlots;
+    }
+}
+
+class HashMapDetails extends HashDetails {
+    public Map<?, ?> map;
 
     public HashMapDetails(Map<?, ?> m, Date d, String c) {
         map = m;
         allocTime = d;
         caller = c;
         size = map.size();
+    }
+    
+    public Map<?,?> getMap() {
+        return map;
+    }
+    
+    public String getDetailType() {
+        return map.getClass().getSimpleName();
+    }
+}
+
+class HashSetDetails extends HashDetails {
+    private static Field MAP_FIELD;
+    static {
+        try {
+            MAP_FIELD = HashSet.class.getDeclaredField("map");
+            MAP_FIELD.setAccessible(true);
+        } catch (Exception e) {
+            MAP_FIELD = null;
+        }
+    }
+    
+    public Set<?> set;
+
+    public HashSetDetails(Set<?> s, Date d, String c) {
+        set = s;
+        allocTime = d;
+        caller = c;
+        size = set.size();
+    }
+    
+    public Map<?,?> getMap() {
+        try {
+            if (MAP_FIELD == null)
+                return null;
+            
+            return (Map<?,?>) MAP_FIELD.get(set);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public String getDetailType() {
+        return set.getClass().getSimpleName();
     }
 }
