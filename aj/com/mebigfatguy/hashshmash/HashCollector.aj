@@ -24,6 +24,10 @@ public aspect HashCollector {
         HashMapDetails details = new HashMapDetails(m, new Date(), fileName + ":" + line);
         journaller.add(details);
     }
+    
+    before(): execution(public static void *.main(String[])) {
+        Class<?> c = HashCollector.class;
+    }
 }
 
 final class Journaller implements Runnable {
@@ -37,6 +41,7 @@ final class Journaller implements Runnable {
 
     public Journaller() {
         try {
+            
             tableField = HashMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
               
