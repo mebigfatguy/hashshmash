@@ -74,6 +74,8 @@ final class Journaller implements Runnable {
                             }
                             writer.println(details.allocTime + "\t" + details.caller + "\t" + details.map.size() + "\t" + details.totalSlots + "\t" + details.usedSlots);
                             hmDetails.remove(details);
+                        } else {
+                            details.size = newSize;
                         }
                     } catch (Exception e) {
                         //might get ConcurrentModificationException or such, just ignore
