@@ -63,19 +63,17 @@ final class Journaller implements Runnable {
                 
                 for (HashMapDetails details : hmDetails.keySet()) {
                     try {
-                        if (details.map != null) {
-                            int newSize = details.map.size();
-                            if (newSize == details.size) {
-                                Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(details.map);
-                                details.totalSlots = table.length;
-                                for (Entry<?, ?> e : table) {
-                                    if (e != null) {
-                                        details.usedSlots++;
-                                    }
+                        int newSize = details.map.size();
+                        if (newSize == details.size) {
+                            Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(details.map);
+                            details.totalSlots = table.length;
+                            for (Entry<?, ?> e : table) {
+                                if (e != null) {
+                                    details.usedSlots++;
                                 }
-                                writer.println(details.allocTime + "\t" + details.caller + "\t" + details.map.size() + "\t" + details.totalSlots + "\t" + details.usedSlots);
-                                hmDetails.remove(details);
                             }
+                            writer.println(details.allocTime + "\t" + details.caller + "\t" + details.map.size() + "\t" + details.totalSlots + "\t" + details.usedSlots);
+                            hmDetails.remove(details);
                         }
                     } catch (Exception e) {
                         //might get ConcurrentModificationException or such, just ignore
