@@ -47,9 +47,14 @@ final class Journaller implements Runnable {
     private Field tableField;
     private ConcurrentHashMap<HashDetails, HashDetails> hDetails = new ConcurrentHashMap<HashDetails, HashDetails>();
     private PrintWriter writer;
+    private boolean operational = false;
 
     public Journaller() {
         try {
+            System.out.println("*************************");
+            System.out.println("HASHSHMASH ASPECT ENABLED");
+            System.out.println("*************************");
+            
             tableField = HashMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
               
@@ -62,11 +67,13 @@ final class Journaller implements Runnable {
             t.setDaemon(true);
             t.start();
         } catch (Exception e) {
+            operational = true;
         }
     }
     
     public void add(HashDetails details) {
-        hDetails.put(details,  details);
+        if (operational)
+            hDetails.put(details,  details);
     }
     
     public void run() {
