@@ -19,7 +19,7 @@ public aspect HashCollector {
     
     private static final Journaller journaller = new Journaller();
 
-    after() returning (Map m): call(HashMap.new(..)) {
+    after() returning (Map<?,?> m): call(HashMap.new(..)) {
         String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
         int line = thisJoinPointStaticPart.getSourceLocation().getLine();
         
@@ -27,7 +27,7 @@ public aspect HashCollector {
         journaller.add(details);
     }
     
-    after() returning (Set s): call(HashSet.new(..)) {
+    after() returning (Set<?> s): call(HashSet.new(..)) {
         String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
         int line = thisJoinPointStaticPart.getSourceLocation().getLine();
         
