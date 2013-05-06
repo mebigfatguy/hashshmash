@@ -65,9 +65,9 @@ final class Journaller implements Runnable {
             
             Thread t = new Thread(this);
             t.setDaemon(true);
+            operational = true;
             t.start();
         } catch (Exception e) {
-            operational = true;
         }
     }
     
