@@ -113,7 +113,7 @@ final class Journaller implements Runnable {
 }
 
 abstract class HashDetails {
-    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
     
     public Date allocTime;
     public String caller;
