@@ -30,5 +30,7 @@ The aspect will generate a file in ${user.home}/.hashshmash with allocation info
 
 Type \t AllocationTime \t AllocationSite \t CollectionSize \t NumberOfBuckets \t UsedBuckets
 
+You will need aspectjtools.jar to apply the aspect to your code, as well as aspectjrt.jar to run it.
+
 
  
