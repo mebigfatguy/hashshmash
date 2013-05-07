@@ -5,16 +5,16 @@ An aspectj library for evaluating the various metrics about hashed collections a
  * excessive allocations of collections
  
  
- To use apply the aspect to your code with an ant task such as
+ To use, apply the aspect to your code with an ant task such as:
  
-  <nowiki>
-     &lt;target name="aspects"&gt;
+
+    &lt;target name="aspects"&gt;
         &lt;aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true"&gt;
             &lt;sourceRoots&gt;
                 &lt;pathelement location="/home/you/dev/hashshmash/aj"/&gt;
             &lt;/sourceRoots&gt;
             &lt;inpath&gt;
-                 &lt;pathelement location="${build.dir}/${your_jar_name}.jar"/&gt;
+                &lt;pathelement location="${build.dir}/${your_jar_name}.jar"/&gt;
             &lt;/inpath&gt;
             &lt;classpath&gt;
                 &lt;pathelement location="${lib.dir}/aspectjrt.jar"/&gt;
@@ -22,7 +22,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
             &lt;/classpath&gt;
         &lt;/aspectj:iajc&gt;
     &lt;/target&gt;
- </nowiki>
+
 
 Then delete your original jar ${build.dir}/${your_jar_name}.jar and just use ${build.dir}/${your_jar_name}_aj.jar
 
