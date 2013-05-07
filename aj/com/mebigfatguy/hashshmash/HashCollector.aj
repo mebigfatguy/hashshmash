@@ -44,11 +44,27 @@ public aspect HashCollector {
         journaller.add(details);
     }
     
+    after() returning (Map<?,?> m): call(LinkedHashMap.new(..)) {
+        String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
+        int line = thisJoinPointStaticPart.getSourceLocation().getLine();
+        
+        HashMapDetails details = new LinkedHashMapDetails(m, new Date(), fileName + ":" + line);
+        journaller.add(details);
+    }
+    
     after() returning (Set<?> s): call(HashSet.new(..)) {
         String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
         int line = thisJoinPointStaticPart.getSourceLocation().getLine();
         
         HashSetDetails details = new HashSetDetails(s, new Date(), fileName + ":" + line);
+        journaller.add(details);
+    }
+    
+    after() returning (Set<?> s): call(LinkedHashSet.new(..)) {
+        String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
+        int line = thisJoinPointStaticPart.getSourceLocation().getLine();
+        
+        HashSetDetails details = new LinkedHashSetDetails(s, new Date(), fileName + ":" + line);
         journaller.add(details);
     }
     
@@ -166,6 +182,18 @@ class HashMapDetails extends HashDetails {
     }
 }
 
+class LinkedHashMapDetails extends HashMapDetails {
+    public Map<?, ?> map;
+
+    public LinkedHashMapDetails(Map<?, ?> m, Date d, String c) {
+       super(m, d, c);
+    }
+    
+    public String getDetailType() {
+        return map.getClass().getSimpleName();
+    }
+}
+
 class HashSetDetails extends HashDetails {
     private static Field MAP_FIELD;
     static {
@@ -199,5 +227,17 @@ class HashSetDetails extends HashDetails {
     
     public String getDetailType() {
         return set.getClass().getSimpleName();
+    }
+}
+
+class LinkedHashSetDetails extends HashSetDetails {
+    public Map<?, ?> map;
+
+    public LinkedHashSetDetails(Set<?> s, Date d, String c) {
+       super(s, d, c);
+    }
+    
+    public String getDetailType() {
+        return map.getClass().getSimpleName();
     }
 }
