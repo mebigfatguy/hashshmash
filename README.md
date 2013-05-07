@@ -7,6 +7,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
  
  To use apply the aspect to your code with an ant task such as
  
+ <nowiki>
  &lt;target name="aspects"&gt;
     &lt;aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true"&gt;
         &lt;sourceRoots&gt;
@@ -21,6 +22,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
         &lt;/classpath&gt;
     &lt;/aspectj:iajc&gt;
 &lt;/target&gt;
+</nowiki>
 
 Then delete your original jar ${build.dir}/${your_jar_name}.jar and just use ${build.dir}/${your_jar_name}_aj.jar
 
