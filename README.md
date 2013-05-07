@@ -7,20 +7,20 @@ An aspectj library for evaluating the various metrics about hashed collections a
  
  To use apply the aspect to your code with an ant task such as
  
- <target name="aspects">
-    <aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true">
-        <sourceRoots>
-            <pathelement location="/home/you/dev/hashshmash/aj"/>
-        </sourceRoots>
-        <inpath>
-             <pathelement location="${build.dir}/${your_jar_name}.jar"/>
-        </inpath>
-        <classpath>
-            <pathelement location="${lib.dir}/aspectjrt.jar"/>
-            <path refid="your.classpath"/>
-        </classpath>
-    </aspectj:iajc>
-</target>
+ &lt;target name="aspects"&gt;
+    &lt;aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true"&gt;
+        &lt;sourceRoots&gt;
+            &lt;pathelement location="/home/you/dev/hashshmash/aj"/&gt;
+        &lt;/sourceRoots&gt;
+        &lt;inpath&gt;
+             &lt;pathelement location="${build.dir}/${your_jar_name}.jar"/&gt;
+        &lt;/inpath&gt;
+        &lt;classpath&gt;
+            &lt;pathelement location="${lib.dir}/aspectjrt.jar"/&gt;
+            &lt;path refid="your.classpath"/&gt;
+        &lt;/classpath&gt;
+    &lt;/aspectj:iajc&gt;
+&lt;/target&gt;
 
 Then delete your original jar ${build.dir}/${your_jar_name}.jar and just use ${build.dir}/${your_jar_name}_aj.jar
 
