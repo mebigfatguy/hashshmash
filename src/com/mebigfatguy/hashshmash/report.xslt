@@ -21,6 +21,7 @@
         <xsl:copy>
             <xsl:value-of select="$title"/>
         </xsl:copy>
+        <link rel="stylesheet" type="text/css" href="hashshmash.css"/>
     </xsl:template>
  
     <xsl:template match="ul/li/div">

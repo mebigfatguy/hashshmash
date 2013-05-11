@@ -17,11 +17,14 @@
  */
 package com.mebigfatguy.hashshmash;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -63,6 +66,7 @@ public class Report {
                 File output = new File(f.getParentFile(), f.getName().substring(0, f.getName().lastIndexOf('.')) + ".html");
                 bw = new BufferedWriter(new FileWriter(output));
                 writeReport(bw, f.getName(), allocations);
+                writeCSS(f.getParentFile());
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -126,6 +130,25 @@ public class Report {
             closeQuietly(xml);
             closeQuietly(xsl);
         }  
+    }
+    
+    private void writeCSS(File directory) throws IOException {
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/hashshmash.css"));
+            bos = new BufferedOutputStream(new FileOutputStream(new File(directory, "hashshash.css")));
+            
+            byte[] buffer = new byte[1024];
+            int length = bis.read(buffer);
+            while (length >= 0) {
+                bos.write(buffer, 0, length);
+                length = bis.read(buffer);
+            }
+        } finally {
+            closeQuietly(bis);
+            closeQuietly(bos);
+        }
     }
     
     private static void closeQuietly(Closeable c) {
