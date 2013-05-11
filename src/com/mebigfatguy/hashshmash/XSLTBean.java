@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.hashshmash;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,30 +25,35 @@ import java.util.Map;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class XSLTBean {
 
-    private Map<String, SiteAllocationInfo> allocations;
-    private List<String> types;
+    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+
+    private Map<String, Map<String, SiteAllocationInfo>> allocations;
+    
     private final Document doc;
     
-    public XSLTBean(Map<String, SiteAllocationInfo> allocs) throws ParserConfigurationException {
+    public XSLTBean(Map<String, Map<String, SiteAllocationInfo>> allocs) throws ParserConfigurationException {
         allocations = allocs;
-        
-        types = new ArrayList<String>(allocations.keySet());
-        Collections.<String>sort(types);
         doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
     }
     
     public NodeList getTypes(final ExpressionContext ec) {
         return new NodeList() {
-            
-            
+
+            private List<String> types;
+            {
+                types = new ArrayList<String>(allocations.keySet());
+                Collections.<String>sort(types);
+            }
             
             @Override
             public Node item(int index) {
@@ -61,8 +67,81 @@ public class XSLTBean {
         };
     }
     
-    private static Document getDocument(Node n) {
-        return n.getOwnerDocument();
-    }
+    public NodeList getLocations(final ExpressionContext ec, final String type) {
+        return new NodeList() {
 
+            private List<String> locations;
+            {
+                Map<String, SiteAllocationInfo> siteInfo = allocations.get(type);
+                if (siteInfo != null) {
+                    locations = new ArrayList<String>(siteInfo.keySet());
+                    Collections.<String>sort(locations);
+                } else {
+                    locations = new ArrayList<String>();
+                }
+            }
+            
+            @Override
+            public Node item(int index) {
+                return doc.createTextNode(locations.get(index));
+            }
+
+            @Override
+            public int getLength() {
+                return locations.size();
+            }
+        };
+    }
+    
+    public NodeList getStatisticRows(final ExpressionContext ec, final String type, final String location) {
+        return new NodeList() {
+
+            private SiteAllocationInfo info;
+            {
+                info = allocations.get(type).get(location);
+            }
+            
+            @Override
+            public Node item(int index) {
+                Element tr = doc.createElement("tr");
+                
+                Element td = doc.createElement("td");
+                Text txt = doc.createTextNode(FORMATTER.format(info.getStartAllocationTime()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                td = doc.createElement("td");
+                txt = doc.createTextNode(FORMATTER.format(info.getEndAllocationTime()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                td = doc.createElement("td");
+                txt = doc.createTextNode(String.valueOf(info.getNumAllocations()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                td = doc.createElement("td");
+                txt = doc.createTextNode(String.valueOf(info.getAverageSize()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                td = doc.createElement("td");
+                txt = doc.createTextNode(String.valueOf(info.getAverageBuckets()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                td = doc.createElement("td");
+                txt = doc.createTextNode(String.valueOf(info.getAverageUsedBuckets()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                return tr;
+            }
+
+            @Override
+            public int getLength() {
+                return (info == null) ? 0 : 1;
+            }
+        };
+    }
 }

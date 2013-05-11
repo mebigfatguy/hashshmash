@@ -59,7 +59,7 @@ public class Report {
             BufferedWriter bw = null;
             try {
                 br = new BufferedReader(new FileReader(f));
-                Map<String, SiteAllocationInfo> allocations = generateStatistics(br);
+                Map<String, Map<String, SiteAllocationInfo>> allocations = generateStatistics(br);
                 File output = new File(f.getParentFile(), f.getName().substring(0, f.getName().lastIndexOf('.')) + ".html");
                 bw = new BufferedWriter(new FileWriter(output));
                 writeReport(bw, f.getName(), allocations);
@@ -72,8 +72,8 @@ public class Report {
         }
     }
 
-    private Map<String, SiteAllocationInfo> generateStatistics(BufferedReader br) throws IOException, ParseException {
-        Map<String, SiteAllocationInfo> allocations = new HashMap<String, SiteAllocationInfo>();
+    private Map<String, Map<String, SiteAllocationInfo>> generateStatistics(BufferedReader br) throws IOException, ParseException {
+        Map<String, Map<String, SiteAllocationInfo>> allocations = new HashMap<String, Map<String, SiteAllocationInfo>>();
         String line;
         while ((line = br.readLine()) != null) {
             String[] elements = line.split("\t");
@@ -87,12 +87,18 @@ public class Report {
             int buckets = Integer.parseInt(elements[4]);
             int usedBuckets = Integer.parseInt(elements[5]);
             
-            SiteAllocationInfo info = allocations.get(type);
+            Map<String, SiteAllocationInfo> siteInfo = allocations.get(type);
+            if (siteInfo == null) {
+                siteInfo = new HashMap<String, SiteAllocationInfo>();
+                allocations.put(type, siteInfo);
+            }
+            
+            SiteAllocationInfo info = siteInfo.get(location);
             if (info == null) {
                 info = new SiteAllocationInfo();
-                allocations.put(type, info);
+                siteInfo.put(location, info);
             }
-            info.add(allocationTime, location, size, buckets, usedBuckets);
+            info.add(allocationTime, size, buckets, usedBuckets);
         }
         
         return allocations;
@@ -100,7 +106,7 @@ public class Report {
     
     
     private void writeReport(BufferedWriter bw, String title,
-            Map<String, SiteAllocationInfo> allocations) throws TransformerException, ParserConfigurationException {
+            Map<String, Map<String, SiteAllocationInfo>> allocations) throws TransformerException, ParserConfigurationException {
 
         InputStream xml = null;
         InputStream xsl = null;

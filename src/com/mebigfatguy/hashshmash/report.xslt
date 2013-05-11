@@ -26,8 +26,28 @@
     <xsl:template match="ul/li/div">
         <xsl:for-each select="hs:getTypes($bean)">
             <xsl:variable name="type" select="."/>
-            <div>
+            <div class="type">
 		        <h1>Type: <xsl:value-of select="$type"/></h1>
+		        <xsl:for-each select="hs:getLocations($bean, $type)">
+		            <xsl:variable name="location" select="."/>
+		            <div class="location">
+		              <h2>Location: <xsl:value-of select="$location"/></h2>
+		              <table>
+		                  <tr>
+		                      <th>Start Allocation Time</th>
+		                      <th>End Allocation Time</th>
+		                      <th>Num Allocations</th>
+		                      <th>Average Collection Size</th>
+		                      <th>Average Bucket Size</th>
+		                      <th>Average Used Bucket Size</th>
+		                  </tr>
+		                  <xsl:for-each select="hs:getStatisticRows($bean, $type, $location)">
+			                  <xsl:variable name="stats" select="."/>
+			                  <xsl:copy-of select="$stats"/>
+		                  </xsl:for-each>
+		              </table>
+		            </div>
+		        </xsl:for-each>
 	        </div>
         </xsl:for-each>
     </xsl:template> 

@@ -30,7 +30,7 @@ public class SiteAllocationInfo {
     private int totalBuckets;
     private int totalUsedBuckets;
     
-    public void add(Date allocationTime, String location, int size, int buckets, int usedBuckets) {
+    public void add(Date allocationTime, int size, int buckets, int usedBuckets) {
         if (startAllocationTime == null)
             startAllocationTime = allocationTime;
         endAllocationTime = allocationTime;
@@ -46,6 +46,10 @@ public class SiteAllocationInfo {
     
     public Date getEndAllocationTime() {
         return endAllocationTime;
+    }
+    
+    public int getNumAllocations() {
+        return numAllocations;
     }
     
     public double getAverageSize() {
