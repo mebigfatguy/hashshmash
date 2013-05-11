@@ -39,7 +39,6 @@
     <property name="yank.version" value="0.2.0"/>
 
     <path id="hashshmash.classpath">
-        <pathelement location="${lib.dir}/junit.jar"/>
     </path>
     
     <target name="clean" description="removes all generated collateral">
@@ -62,17 +61,23 @@
             <server url="http://repo1.maven.org/maven2"/>
         </yank>
 	</target>
-<!--    
+    
     <target name="compile" depends="-init, yank" description="compiles java files">
     	<aspectj:iajc source="1.6" sourceroots="${aj.dir}" destDir="${classes.dir}" classpath="${lib.dir}/aspectjrt.jar">
     	</aspectj:iajc>
+    	
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" source="${javac.source}" target="${javac.target}" deprecation="${javac.deprecation}" debug="${javac.debug}" includeantruntime="false">
+            <classpath refid="hashshmash.classpath" />
+        </javac>
     </target>
--->
 
-    <target name="jar" depends="-init, yank" description="produces the hashshmash jar file">
+    <target name="jar" depends="-init, yank, compile" description="produces the hashshmash jar file">
         <jar destfile="${basedir}/hashshmash-${hashshmash.version}.jar">
             <fileset dir="${aj.dir}">
                 <include name="**/*.aj"/>
+            </fileset>
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class"/>
             </fileset>
             <manifest>
                 <attribute name="hashshmash-version" value="${hashshmash.version}"/>
