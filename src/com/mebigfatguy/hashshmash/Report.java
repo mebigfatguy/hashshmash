@@ -26,15 +26,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.OutputKeys;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -102,7 +100,7 @@ public class Report {
     
     
     private void writeReport(BufferedWriter bw, String title,
-            Map<String, SiteAllocationInfo> allocations) throws TransformerException {
+            Map<String, SiteAllocationInfo> allocations) throws TransformerException, ParserConfigurationException {
 
         InputStream xml = null;
         InputStream xsl = null;
@@ -113,10 +111,9 @@ public class Report {
             
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer(new StreamSource(xsl));
-            t.setOutputProperty(OutputKeys.INDENT, "yes");
-            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             
             t.setParameter("title", title);
+            t.setParameter("bean", new XSLTBean(allocations));
             t.transform(new StreamSource(xml), new StreamResult(bw));
             
         } finally {
