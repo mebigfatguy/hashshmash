@@ -25,12 +25,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 
 public class Report {
@@ -49,18 +58,18 @@ public class Report {
     public void generateReports() {
         for (File f : directory.listFiles(new AllocationsFileFilter())) {          
             BufferedReader br = null;
-            PrintWriter pw = null;
+            BufferedWriter bw = null;
             try {
                 br = new BufferedReader(new FileReader(f));
                 Map<String, SiteAllocationInfo> allocations = generateStatistics(br);
                 File output = new File(f.getParentFile(), f.getName().substring(0, f.getName().lastIndexOf('.')) + ".html");
-                pw = new PrintWriter(new BufferedWriter(new FileWriter(output)));
-                writeReport(pw, allocations);
+                bw = new BufferedWriter(new FileWriter(output));
+                writeReport(bw, f.getName(), allocations);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 closeQuietly(br);
-                closeQuietly(pw);
+                closeQuietly(bw);
             }
         }
     }
@@ -92,10 +101,28 @@ public class Report {
     }
     
     
-    private void writeReport(PrintWriter pw,
-            Map<String, SiteAllocationInfo> allocations) {
+    private void writeReport(BufferedWriter bw, String title,
+            Map<String, SiteAllocationInfo> allocations) throws TransformerException {
 
+        InputStream xml = null;
+        InputStream xsl = null;
         
+        try {
+            xml = Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/report.xml");
+            xsl = Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/report.xslt");
+            
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer t = tf.newTransformer(new StreamSource(xsl));
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            
+            t.setParameter("title", title);
+            t.transform(new StreamSource(xml), new StreamResult(bw));
+            
+        } finally {
+            closeQuietly(xml);
+            closeQuietly(xsl);
+        }  
     }
     
     private static void closeQuietly(Closeable c) {
