@@ -39,6 +39,9 @@
     <property name="yank.version" value="0.2.0"/>
 
     <path id="hashshmash.classpath">
+        <pathelement location="${lib.dir}/xml-apis.jar"/>
+        <pathelement location="${lib.dir}/xalan.jar"/>
+        <pathelement location="${lib.dir}/serializer.jar"/>
     </path>
     
     <target name="clean" description="removes all generated collateral">
