@@ -31,8 +31,15 @@ public class SiteAllocationInfo {
     private int totalUsedBuckets;
     
     public void add(Date allocationTime, int size, int buckets, int usedBuckets) {
-        if (startAllocationTime == null)
+        if (startAllocationTime == null) {
             startAllocationTime = allocationTime;
+            endAllocationTime = allocationTime;
+        } else {
+            if (allocationTime.before(startAllocationTime))
+                startAllocationTime = allocationTime;
+            if (allocationTime.after(endAllocationTime))
+                endAllocationTime = allocationTime;
+        }
         endAllocationTime = allocationTime;
         ++numAllocations;
         totalSize += size;
