@@ -1,4 +1,8 @@
 
+h1 {
+	color: $FF0000;
+}
+
 body {
 	background-color: #EEEEFF;
 }

@@ -42,6 +42,8 @@
         <pathelement location="${lib.dir}/xml-apis.jar"/>
         <pathelement location="${lib.dir}/xalan.jar"/>
         <pathelement location="${lib.dir}/serializer.jar"/>
+        <pathelement location="${lib.dir}/aspectjrt.jar"/>
+    	<pathelement location="${basedir}/hashshmash-${hashshmash.version}.jar"/>
     </path>
     
     <target name="clean" description="removes all generated collateral">
@@ -78,6 +80,11 @@
         <jar destfile="${basedir}/hashshmash-${hashshmash.version}.jar">
             <fileset dir="${aj.dir}">
                 <include name="**/*.aj"/>
+            </fileset>
+            <fileset dir="${src.dir}">
+                <include name="**/*.xml"/>
+                <include name="**/*.xslt"/>
+                <include name="**/*.css"/>
             </fileset>
             <fileset dir="${classes.dir}">
                 <include name="**/*.class"/>
@@ -118,6 +125,10 @@
 
     <target name="build" depends="clean, -init, jar" description="builds the hashshmash jar">
     </target>
+	
+	<target name="report" depends="jar" description="generates html reports based on hashshmash aspect statistics generation">
+		<java classname="com.mebigfatguy.hashshmash.Report" classpathref="hashshmash.classpath"/>
+	</target>
 
     <target name="release" depends="build, srczip, javadoc" description="prepares everything for a release"/>
     

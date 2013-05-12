@@ -45,7 +45,7 @@ import javax.xml.transform.stream.StreamSource;
 
 public class Report {
 
-    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     
     private File directory;
     
