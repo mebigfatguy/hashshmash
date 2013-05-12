@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.xalan.extensions.ExpressionContext;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,11 +37,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XSLTBean {
 
+    private static final double HIGH_ALLOC_COUNT = 1000.0;
+    private static final double HIGH_ALLOC_RATE = 10000.0;
     private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     private static NumberFormat NUMBER_FORMATTER = NumberFormat.getInstance();
     
     static {
         NUMBER_FORMATTER.setMaximumFractionDigits(2);
+        NUMBER_FORMATTER.setMinimumFractionDigits(2);
     }
 
     private Map<String, Map<String, SiteAllocationInfo>> allocations;
@@ -128,12 +132,14 @@ public class XSLTBean {
                 
                 td = doc.createElement("td");
                 double delta = info.getEndAllocationTime().getTime() - info.getStartAllocationTime().getTime();
-                if (delta == 0.0)
-                    txt = doc.createTextNode("1.0");
-                else
-                    txt = doc.createTextNode(NUMBER_FORMATTER.format((60000.0 * info.getNumAllocations()) / delta));
+                double apm = (delta == 0.0) ? 0.0 : ((60000.0 * info.getNumAllocations()) / delta);
+                txt = doc.createTextNode(NUMBER_FORMATTER.format(apm));
+                if ((info.getNumAllocations() > HIGH_ALLOC_COUNT) && (apm > HIGH_ALLOC_RATE)) {
+                    td.setAttribute("class", "high");
+                }
                 td.appendChild(txt);
                 tr.appendChild(td);
+                
                 
                 td = doc.createElement("td");
                 txt = doc.createTextNode(NUMBER_FORMATTER.format(info.getAverageSize()));
