@@ -137,7 +137,7 @@ public class Report {
         BufferedOutputStream bos = null;
         try {
             bis = new BufferedInputStream(Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/hashshmash.css"));
-            bos = new BufferedOutputStream(new FileOutputStream(new File(directory, "hashshash.css")));
+            bos = new BufferedOutputStream(new FileOutputStream(new File(directory, "hashshmash.css")));
             
             byte[] buffer = new byte[1024];
             int length = bis.read(buffer);
