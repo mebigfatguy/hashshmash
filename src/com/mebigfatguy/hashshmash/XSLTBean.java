@@ -21,11 +21,11 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.xalan.extensions.ExpressionContext;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -82,10 +82,18 @@ public class XSLTBean {
 
             private List<String> locations;
             {
-                Map<String, SiteAllocationInfo> siteInfo = allocations.get(type);
+                final Map<String, SiteAllocationInfo> siteInfo = allocations.get(type);
                 if (siteInfo != null) {
                     locations = new ArrayList<String>(siteInfo.keySet());
-                    Collections.<String>sort(locations);
+                    Collections.<String>sort(locations, new Comparator<String>() {
+
+                        @Override
+                        public int compare(String site1, String site2) {
+                            SiteAllocationInfo sai1 = siteInfo.get(site1);
+                            SiteAllocationInfo sai2 = siteInfo.get(site2);
+                            return sai2.getNumAllocations() - sai1.getNumAllocations();    
+                        }
+                    });
                 } else {
                     locations = new ArrayList<String>();
                 }
