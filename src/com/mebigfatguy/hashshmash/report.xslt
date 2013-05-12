@@ -38,6 +38,7 @@
 		                      <th>Start Allocation Time</th>
 		                      <th>End Allocation Time</th>
 		                      <th>Num Allocations</th>
+		                      <th>Allocations Per Minute</th>
 		                      <th>Average Collection Size</th>
 		                      <th>Average Bucket Size</th>
 		                      <th>Average Used Bucket Size</th>

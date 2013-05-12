@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.hashshmash;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +36,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XSLTBean {
 
-    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+    private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+    private static NumberFormat NUMBER_FORMATTER = NumberFormat.getInstance();
+    
+    static {
+        NUMBER_FORMATTER.setMaximumFractionDigits(2);
+    }
 
     private Map<String, Map<String, SiteAllocationInfo>> allocations;
     
@@ -106,12 +112,12 @@ public class XSLTBean {
                 Element tr = doc.createElement("tr");
                 
                 Element td = doc.createElement("td");
-                Text txt = doc.createTextNode(FORMATTER.format(info.getStartAllocationTime()));
+                Text txt = doc.createTextNode(DATE_FORMATTER.format(info.getStartAllocationTime()));
                 td.appendChild(txt);
                 tr.appendChild(td);
                 
                 td = doc.createElement("td");
-                txt = doc.createTextNode(FORMATTER.format(info.getEndAllocationTime()));
+                txt = doc.createTextNode(DATE_FORMATTER.format(info.getEndAllocationTime()));
                 td.appendChild(txt);
                 tr.appendChild(td);
                 
@@ -121,17 +127,26 @@ public class XSLTBean {
                 tr.appendChild(td);
                 
                 td = doc.createElement("td");
-                txt = doc.createTextNode(String.valueOf(info.getAverageSize()));
+                double delta = info.getEndAllocationTime().getTime() - info.getStartAllocationTime().getTime();
+                if (delta == 0.0)
+                    txt = doc.createTextNode("1.0");
+                else
+                    txt = doc.createTextNode(NUMBER_FORMATTER.format((60000.0 * info.getNumAllocations()) / delta));
                 td.appendChild(txt);
                 tr.appendChild(td);
                 
                 td = doc.createElement("td");
-                txt = doc.createTextNode(String.valueOf(info.getAverageBuckets()));
+                txt = doc.createTextNode(NUMBER_FORMATTER.format(info.getAverageSize()));
                 td.appendChild(txt);
                 tr.appendChild(td);
                 
                 td = doc.createElement("td");
-                txt = doc.createTextNode(String.valueOf(info.getAverageUsedBuckets()));
+                txt = doc.createTextNode(NUMBER_FORMATTER.format(info.getAverageBuckets()));
+                td.appendChild(txt);
+                tr.appendChild(td);
+                
+                td = doc.createElement("td");
+                txt = doc.createTextNode(NUMBER_FORMATTER.format(info.getAverageUsedBuckets()));
                 td.appendChild(txt);
                 tr.appendChild(td);
                 
