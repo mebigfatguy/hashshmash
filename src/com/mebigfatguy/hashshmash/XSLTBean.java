@@ -36,7 +36,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XSLTBean {
 
-    private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+    private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     private static NumberFormat NUMBER_FORMATTER = NumberFormat.getInstance();
     
     static {
