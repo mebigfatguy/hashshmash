@@ -33,4 +33,11 @@ Type \t AllocationTime \t AllocationSite \t CollectionSize \t NumberOfBuckets \t
 You will need aspectjtools.jar to apply the aspect to your code, as well as aspectjrt.jar to run it.
 
 
+Once you have collected a statistics file by running with aspects, you can generate an html report by running
+
+    ant report
+    
+
+
+
  
