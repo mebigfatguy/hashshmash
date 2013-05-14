@@ -78,9 +78,6 @@
 
     <target name="jar" depends="-init, yank, compile" description="produces the hashshmash jar file">
         <jar destfile="${basedir}/hashshmash-${hashshmash.version}.jar">
-            <fileset dir="${aj.dir}">
-                <include name="**/*.aj"/>
-            </fileset>
             <fileset dir="${src.dir}">
                 <include name="**/*.xml"/>
                 <include name="**/*.xslt"/>
