@@ -10,9 +10,9 @@ An aspectj library for evaluating the various metrics about hashed collections a
 
     &lt;target name="aspects"&gt;  
         &lt;aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true"&gt;  
-            &lt;sourceRoots&gt;  
-                &lt;pathelement location="/home/you/dev/hashshmash/aj"/&gt;  
-            &lt;/sourceRoots&gt;  
+            &lt;aspectpath&gt;  
+                &lt;pathelement location="/home/you/dev/hashshmash-0.1.0.jar"/&gt;  
+            &lt;/aspectpath&gt;  
             &lt;inpath&gt;  
                 &lt;pathelement location="${build.dir}/${your_jar_name}.jar"/&gt;  
             &lt;/inpath&gt;  
