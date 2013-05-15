@@ -86,6 +86,9 @@
             <fileset dir="${classes.dir}">
                 <include name="**/*.class"/>
             </fileset>
+            <fileset dir="${basedir}">
+                <include name="**/license.txt"/>
+            </fileset>
             <manifest>
                 <attribute name="hashshmash-version" value="${hashshmash.version}"/>
                 <attribute name="Bundle-ManifestVersion" value="2"/>
@@ -109,6 +112,7 @@
                 <include name="**/*.css"/>
                 <include name="**/build.*"/>
                 <include name="**/yank.xls"/>
+                <include name="**/license.txt"/>
             </fileset>
         </zip>
     </target>
