@@ -33,7 +33,7 @@
     <property name="javac.deprecation" value="on"/>
     <property name="javac.debug" value="on"/>
     
-    <property name="hashshmash.version" value="0.1.0"/>
+    <property name="hashshmash.version" value="0.2.0"/>
     <property name="sonatype.dir" value="${user.home}/.hashshmash-${hashshmash.version}-sonatype" />
 
     <property name="yank.version" value="0.2.0"/>
