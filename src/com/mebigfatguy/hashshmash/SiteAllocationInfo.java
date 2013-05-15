@@ -17,9 +17,7 @@
  */
 package com.mebigfatguy.hashshmash;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class SiteAllocationInfo {
 

@@ -100,11 +100,15 @@
     </target>
 
     <target name="srczip" description="builds the source distribution zip file">
-        <zip destfile="${basedir}/hashshmash-${hashshmash.version}-sources.jar" basedir="${basedir}">
-            <fileset dir="${aj.dir}">
+        <zip destfile="${basedir}/hashshmash-${hashshmash.version}-sources.jar">
+            <fileset dir="${basedir}">
                 <include name="**/*.aj"/>
-                <include name="**/*.license"/>
-                <include name="lib/*.jar"/>
+                <include name="**/*.java"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.xslt"/>
+                <include name="**/*.css"/>
+                <include name="**/build.*"/>
+                <include name="**/yank.xls"/>
             </fileset>
         </zip>
     </target>
