@@ -39,6 +39,7 @@ public class XSLTBean {
 
     private static final double HIGH_ALLOC_COUNT = 1000.0;
     private static final double HIGH_ALLOC_RATE = 10000.0;
+    private static final int ONE_MINUTE = 60 * 1000;
     private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     private static NumberFormat NUMBER_FORMATTER = NumberFormat.getInstance();
     
@@ -140,10 +141,17 @@ public class XSLTBean {
                 
                 td = doc.createElement("td");
                 double delta = info.getEndAllocationTime().getTime() - info.getStartAllocationTime().getTime();
-                double apm = (delta == 0.0) ? 0.0 : ((60000.0 * info.getNumAllocations()) / delta);
+                double apm;
+                
+                if (delta < ONE_MINUTE)
+                    apm = info.getNumAllocations();
+                else
+                    apm = (delta == 0.0) ? 0.0 : ((60000.0 * info.getNumAllocations()) / delta);
                 txt = doc.createTextNode(NUMBER_FORMATTER.format(apm));
                 if ((info.getNumAllocations() > HIGH_ALLOC_COUNT) && (apm > HIGH_ALLOC_RATE)) {
                     td.setAttribute("class", "high");
+                } else if (delta < ONE_MINUTE) {
+                    td.setAttribute("class", "suspect");
                 }
                 td.appendChild(txt);
                 tr.appendChild(td);
