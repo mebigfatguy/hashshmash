@@ -32,6 +32,7 @@ You will need to tell ant about the aspectj namespace, by adding this to your pr
 When compiling the aspectjtools.jar should be in ant/lib
 
 Then delete your original jar ${build.dir}/${your_jar_name}.jar and just use ${build.dir}/${your_jar_name}_aj.jar
+You will need to include aspectj.jar and hashshmash.jar in your classpath when running your application.
 
 The aspect will generate a file in ${user.home}/.hashshmash with allocation information in the form
 
