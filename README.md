@@ -5,7 +5,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
  * excessive allocations of collections
  
  
- To use, apply the aspect to your code with an ant task such as:
+ To use, apply the aspect to your code with an ant task such as this:
  
 
     &lt;target name="aspects"&gt;  
@@ -22,7 +22,12 @@ An aspectj library for evaluating the various metrics about hashed collections a
             &lt;/classpath&gt;  
         &lt;/aspectj:iajc&gt;  
     &lt;/target&gt;  
+    
+You will need to tell ant about the aspectj namespace, by adding this to your project node:
 
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+    
+When compiling the aspectjtools.jar should be in ant/lib
 
 Then delete your original jar ${build.dir}/${your_jar_name}.jar and just use ${build.dir}/${your_jar_name}_aj.jar
 
@@ -36,6 +41,15 @@ You will need aspectjtools.jar to apply the aspect to your code, as well as aspe
 Once you have collected a statistics file by running with aspects, you can generate an html report by running
 
     ant report
+    
+    
+HashShmash is available on maven.org
+
+    groupId:    com.mebigfatguy.hashshmash
+    artifactid: hashshmash
+    version:    0.2.0
+    
+    
     
 
 
