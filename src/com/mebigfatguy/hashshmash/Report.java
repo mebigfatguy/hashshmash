@@ -118,8 +118,8 @@ public class Report {
         InputStream xsl = null;
         
         try {
-            xml = Report.class.getResourceAsStream(REPORT_XML);
-            xsl = Report.class.getResourceAsStream(REPORT_XSLT);
+            xml = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_XML));
+            xsl = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_XSLT));
             
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer(new StreamSource(xsl));
