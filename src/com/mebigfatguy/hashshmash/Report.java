@@ -45,7 +45,9 @@ import javax.xml.transform.stream.StreamSource;
 
 public class Report {
 
-    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
+    private static final String REPORT_XML = "/com/mebigfatguy/hashshmash/report.xml";
+    private static final String REPORT_XSLT = "/com/mebigfatguy/hashshmash/report.xslt";
     
     private File directory;
     
@@ -116,8 +118,8 @@ public class Report {
         InputStream xsl = null;
         
         try {
-            xml = Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/report.xml");
-            xsl = Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/report.xslt");
+            xml = Report.class.getResourceAsStream(REPORT_XML);
+            xsl = Report.class.getResourceAsStream(REPORT_XSLT);
             
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer(new StreamSource(xsl));
