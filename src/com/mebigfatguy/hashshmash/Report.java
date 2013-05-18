@@ -48,6 +48,7 @@ public class Report {
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
     private static final String REPORT_XML = "/com/mebigfatguy/hashshmash/report.xml";
     private static final String REPORT_XSLT = "/com/mebigfatguy/hashshmash/report.xslt";
+    private static final String REPORT_CSS = "/com/mebigfatguy/hashshmash/hashshmash.css";
     
     private File directory;
     
@@ -138,7 +139,7 @@ public class Report {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         try {
-            bis = new BufferedInputStream(Report.class.getResourceAsStream("/com/mebigfatguy/hashshmash/hashshmash.css"));
+            bis = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_CSS));
             bos = new BufferedOutputStream(new FileOutputStream(new File(directory, "hashshmash.css")));
             
             byte[] buffer = new byte[1024];
