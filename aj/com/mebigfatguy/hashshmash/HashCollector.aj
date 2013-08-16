@@ -54,6 +54,14 @@ public aspect HashCollector {
         journaller.add(details);
     }
     
+    after() returning (Map<?,?> m): call(ConcurrentHashMapMap.new(..)) {
+        String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
+        int line = thisJoinPointStaticPart.getSourceLocation().getLine();
+        
+        HashMapDetails details = new ConcurrentHashMapDetails(m, new Date(), fileName + ":" + line);
+        journaller.add(details);
+    }
+    
     after() returning (Set<?> s): call(HashSet.new(..)) {
         String fileName = thisJoinPointStaticPart.getSourceLocation().getFileName();
         int line = thisJoinPointStaticPart.getSourceLocation().getLine();
@@ -194,6 +202,18 @@ class LinkedHashMapDetails extends HashMapDetails {
     public String getDetailType() {
         return map.getClass().getSimpleName();
     }
+}
+
+class ConcurrentHashMapDetails extends HashMapDetails {
+    public Map<?, ?> map;
+    
+        public ConcurrentHashMapDetails(Map<?, ?> m, Date d, String c) {
+           super(m, d, c);
+        }
+        
+        public String getDetailType() {
+            return map.getClass().getSimpleName();
+        }
 }
 
 class HashSetDetails extends HashDetails {
