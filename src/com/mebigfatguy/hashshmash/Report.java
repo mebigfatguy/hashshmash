@@ -45,11 +45,11 @@ import javax.xml.transform.stream.StreamSource;
 
 public class Report {
 
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
     private static final String REPORT_XML = "/com/mebigfatguy/hashshmash/report.xml";
     private static final String REPORT_XSLT = "/com/mebigfatguy/hashshmash/report.xslt";
     private static final String REPORT_CSS = "/com/mebigfatguy/hashshmash/hashshmash.css";
     
+    private final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
     private File directory;
     
     public Report() throws FileNotFoundException {
@@ -88,7 +88,7 @@ public class Report {
                 throw new IllegalArgumentException("Invalid input file");
             
             String type = elements[0];
-            Date allocationTime = FORMATTER.parse(elements[1]);
+            Date allocationTime = formatter.parse(elements[1]);
             String location = elements[2];
             int size = Integer.parseInt(elements[3]);
             int buckets = Integer.parseInt(elements[4]);
