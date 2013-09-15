@@ -36,7 +36,7 @@
     <property name="hashshmash.version" value="0.2.0"/>
     <property name="sonatype.dir" value="${user.home}/.hashshmash-${hashshmash.version}-sonatype" />
 
-    <property name="yank.version" value="0.2.0"/>
+    <property name="yank.version" value="0.4.0"/>
 
     <path id="hashshmash.classpath">
         <pathelement location="${lib.dir}/xml-apis.jar"/>
