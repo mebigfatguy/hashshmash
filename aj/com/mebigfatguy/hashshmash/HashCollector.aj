@@ -193,7 +193,6 @@ class HashMapDetails extends HashDetails {
 }
 
 class LinkedHashMapDetails extends HashMapDetails {
-    public Map<?, ?> map;
 
     public LinkedHashMapDetails(Map<?, ?> m, Date d, String c) {
        super(m, d, c);
@@ -205,15 +204,14 @@ class LinkedHashMapDetails extends HashMapDetails {
 }
 
 class ConcurrentHashMapDetails extends HashMapDetails {
-    public Map<?, ?> map;
     
-        public ConcurrentHashMapDetails(Map<?, ?> m, Date d, String c) {
-           super(m, d, c);
-        }
-        
-        public String getDetailType() {
-            return map.getClass().getSimpleName();
-        }
+    public ConcurrentHashMapDetails(Map<?, ?> m, Date d, String c) {
+       super(m, d, c);
+    }
+    
+    public String getDetailType() {
+        return map.getClass().getSimpleName();
+    }
 }
 
 class HashSetDetails extends HashDetails {
