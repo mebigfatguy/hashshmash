@@ -58,14 +58,14 @@ public class SiteAllocationInfo {
     }
     
     public double getAverageSize() {
-        return totalSize / numAllocations;
+        return (double) totalSize / numAllocations;
     }
     
     public double getAverageBuckets() {
-        return totalBuckets / numAllocations;
+        return (double) totalBuckets / numAllocations;
     }
     
     public double getAverageUsedBuckets() {
-        return totalUsedBuckets / numAllocations;
+        return (double) totalUsedBuckets / numAllocations;
     }
 }
