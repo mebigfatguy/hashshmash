@@ -130,12 +130,18 @@ final class Journaller implements Runnable {
                         if (map != null) {
                             int newSize = details.getMap().size();
                             if (newSize == details.size) {
-                                Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(map);
-                                details.totalSlots = table.length;
-                                for (Entry<?, ?> e : table) {
-                                    if (e != null) {
-                                        details.usedSlots++;
+                                try {
+                                    Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(map);
+                                    details.totalSlots = table.length;
+                                    for (Entry<?, ?> e : table) {
+                                        if (e != null) {
+                                            details.usedSlots++;
+                                        }
                                     }
+                                } catch (IllegalArgumentException iae) {
+                                    //ConcurrentHashMap doesn't have a table entry
+                                    details.totalSlots = -1;
+                                    details.usedSlots = -1;
                                 }
                                 writer.println(details);
                                 hDetails.remove(details);
