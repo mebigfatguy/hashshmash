@@ -91,6 +91,9 @@
             </fileset>
             <manifest>
                 <attribute name="hashshmash-version" value="${hashshmash.version}"/>
+                <attribute name="Application-Name" value="HashShmash" />
+                <attribute name="Permissions" value="all-permissions" />
+                <attribute name="Codebase" value="*" />
                 <attribute name="Bundle-ManifestVersion" value="2"/>
                 <attribute name="Bundle-Name" value="hashshmash ant task"/>
                 <attribute name="Bundle-SymbolicName" value="hashshmash; singleton:=true"/>
