@@ -18,7 +18,7 @@
  */
 -->
 
-<project xmlns:aspectj="antlib:org.aspectj" name="hashshmash" default="build">
+<project xmlns:aspectj="antlib:org.aspectj" name="hashshmash" default="info">
 
     <property file="build.properties"/>
 
@@ -45,6 +45,14 @@
         <pathelement location="${lib.dir}/aspectjrt.jar"/>
     	<pathelement location="${basedir}/hashshmash-${hashshmash.version}.jar"/>
     </path>
+	
+    <target name="info">
+        <echo message="hashshmash - a collections statistics library applied through aspects"/>
+        <echo message=""/>
+        <echo message="    this project uses yank (https://github.com/mebigfatguy/yank) for dependency management"/>
+        <echo message="    download yank.jar and place in ant/lib directory"/>
+        <echo message="    http://search.maven.org/#artifactdetails%7Ccom.mebigfatguy.yank%7Cyank%7C0.4.2%7Cjar"/>
+    </target>
     
     <target name="clean" description="removes all generated collateral">
         <delete dir="${classes.dir}"/>
