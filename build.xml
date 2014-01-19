@@ -66,7 +66,7 @@
      </target>
 
     <target name="yank" depends="-init" xmlns:yank="antlib:com.mebigfatguy.yank" description="pull 3rdparty jars to the lib directory">
-        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" reportMissingDependencies="true" source="true">
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" source="true">
             <server url="http://repo1.maven.org/maven2"/>
         </yank:yank>
 	</target>
