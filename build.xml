@@ -36,8 +36,6 @@
     <property name="hashshmash.version" value="0.2.0"/>
     <property name="sonatype.dir" value="${user.home}/.hashshmash-${hashshmash.version}-sonatype" />
 
-    <property name="yank.version" value="0.4.0"/>
-
     <path id="hashshmash.classpath">
         <pathelement location="${lib.dir}/xml-apis.jar"/>
         <pathelement location="${lib.dir}/xalan.jar"/>
@@ -65,14 +63,12 @@
         <mkdir dir="${classes.dir}"/>
         <mkdir dir="${lib.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
-    	<get src="http://repo1.maven.org/maven2/com/mebigfatguy/yank/yank/${yank.version}/yank-${yank.version}.jar" dest="${lib.dir}/yank-${yank.version}.jar"/>
-    </target>
+     </target>
 
-    <target name="yank" depends="-init" description="pull 3rdparty jars to the lib directory">
-    	<taskdef name="yank" classname="com.mebigfatguy.yank.YankTask" classpath="${lib.dir}/yank-${yank.version}.jar"/>
-        <yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" reportMissingDependencies="true" source="true">
+    <target name="yank" depends="-init" xmlns:yank="antlib:com.mebigfatguy.yank" description="pull 3rdparty jars to the lib directory">
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" reportMissingDependencies="true" source="true">
             <server url="http://repo1.maven.org/maven2"/>
-        </yank>
+        </yank:yank>
 	</target>
     
     <target name="compile" depends="-init, yank" description="compiles java files">
