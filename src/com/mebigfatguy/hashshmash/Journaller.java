@@ -50,7 +50,7 @@ public final class Journaller implements Runnable {
             File dir = new File(System.getProperty("user.home"), ".hashshmash");
             dir.mkdirs();  
             
-            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir, new Date().toString() + ".txt")))));
+            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir, new Date() + ".txt")))));
             
             Thread t = new Thread(this);
             t.setDaemon(true);
