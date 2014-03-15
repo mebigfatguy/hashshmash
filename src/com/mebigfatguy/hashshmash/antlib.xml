@@ -1,0 +1,3 @@
+<antlib xmlns:yank="ant:com.mebigfatguy.hashshmash.report">
+   <taskdef name="yank" classname="com.mebigfatguy.hashshmash.ReportTask"/>
+</antlib>

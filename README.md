@@ -42,6 +42,14 @@ Once you have collected a statistics file by running with aspects, you can gener
 
     java -classpath hashsmhash.jar:aspectjrt.jar:xml-apis.jar:xalan.jar:serializer.jar com.mebigfatguy.hashshmash.Report
     
+or if using ant, there is an ant task
+
+    <nowiki>
+    <target name="report" xmlns:report="com.mebigfatguy.hashsmash.report">
+        <report:report/>
+    </target>
+    </nowiki>
+    
     
 HashShmash is available on maven.org
 
