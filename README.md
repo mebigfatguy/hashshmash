@@ -9,10 +9,10 @@ An aspectj library for evaluating the various metrics about hashed collections a
  
 
     <nowiki>
-    &lt;target name="aspects"&gt;  
+    &lt;target name="aspects" xmlns:artifact="antlib:org.apache.maven.artifact.ant"&gt;  
         &lt;aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true"&gt;  
             &lt;aspectpath&gt;  
-                &lt;pathelement location="/${lib.dir}/hashshmash-0.1.0.jar"/&gt;  
+                &lt;pathelement location="${lib.dir}/hashshmash-0.1.0.jar"/&gt;  
             &lt;/aspectpath&gt;  
             &lt;inpath&gt;  
                 &lt;pathelement location="${build.dir}/${your_jar_name}.jar"/&gt;  
@@ -25,9 +25,6 @@ An aspectj library for evaluating the various metrics about hashed collections a
     &lt;/target&gt;  
     </nowiki>
     
-You will need to tell ant about the aspectj namespace, by adding this to your project node:
-
-    xmlns:artifact="antlib:org.apache.maven.artifact.ant"
     
 When compiling the aspectjtools.jar should be in ant/lib
 
