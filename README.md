@@ -8,7 +8,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
  To use, apply the aspect to your code with an ant task such as this:
  
 ```xml
-    <target name="aspects" xmlns:artifact="antlib:org.apache.maven.artifact.ant">  
+    <target name="aspects" xmlns:aspectj="antlib:org.aspectj">  
         <aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" showWeaveInfo="true">  
             <aspectpath>  
                 <pathelement location="${lib.dir}/hashshmash-0.2.0.jar"/>   source="1.6"
