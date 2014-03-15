@@ -11,7 +11,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
     <target name="aspects" xmlns:artifact="antlib:org.apache.maven.artifact.ant">  
         <aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" showWeaveInfo="true">  
             <aspectpath>  
-                <pathelement location="${lib.dir}/hashshmash-0.1.0.jar"/>   source="1.6"
+                <pathelement location="${lib.dir}/hashshmash-0.2.0.jar"/>   source="1.6"
             </aspectpath>  
             <inpath>  
                 <pathelement location="${build.dir}/${your_jar_name}.jar"/>  
