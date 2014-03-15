@@ -40,7 +40,7 @@ You will need aspectjtools.jar to apply the aspect to your code, as well as aspe
 
 Once you have collected a statistics file by running with aspects, you can generate an html report by running
 
-    ant report
+    java -classpath hashsmhash.jar:aspectjrt.jar:xml-apis.jar:xalan.jar:serializer.jar com.mebigfatguy.hashshmash.Report
     
     
 HashShmash is available on maven.org
