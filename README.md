@@ -7,11 +7,11 @@ An aspectj library for evaluating the various metrics about hashed collections a
  
  To use, apply the aspect to your code with an ant task such as this:
  
-
+```xml
     <target name="aspects" xmlns:artifact="antlib:org.apache.maven.artifact.ant">  
-        <aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true">  
+        <aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" showWeaveInfo="true">  
             <aspectpath>  
-                <pathelement location="${lib.dir}/hashshmash-0.1.0.jar"/>  
+                <pathelement location="${lib.dir}/hashshmash-0.1.0.jar"/>   source="1.6"
             </aspectpath>  
             <inpath>  
                 <pathelement location="${build.dir}/${your_jar_name}.jar"/>  
@@ -22,7 +22,7 @@ An aspectj library for evaluating the various metrics about hashed collections a
             </classpath>  
        </aspectj:iajc>  
     </target>
-    
+```
     
 When compiling the aspectjtools.jar should be in ant/lib
 
@@ -41,11 +41,11 @@ Once you have collected a statistics file by running with aspects, you can gener
     java -classpath hashsmhash.jar:aspectjrt.jar:xml-apis.jar:xalan.jar:serializer.jar com.mebigfatguy.hashshmash.Report
     
 or if using ant, there is an ant task
-
+```xml
     <target name="report" xmlns:report="com.mebigfatguy.hashsmash.report">
         <report:report/>
     </target>
-    
+```    
     
 HashShmash is available on maven.org
 
