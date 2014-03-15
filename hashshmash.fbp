@@ -1,0 +1,11 @@
+<Project projectName="">
+  <Jar>./classes</Jar>
+  <AuxClasspathEntry>./lib/aspectjrt.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/aspectjtools.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/hamcrest-core.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/junit.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/serializer.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/xalan.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/xml-apis.jar</AuxClasspathEntry>
+  <SrcDir>./src</SrcDir>
+</Project>
