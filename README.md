@@ -8,22 +8,20 @@ An aspectj library for evaluating the various metrics about hashed collections a
  To use, apply the aspect to your code with an ant task such as this:
  
 
-    <nowiki>
-    &lt;target name="aspects" xmlns:artifact="antlib:org.apache.maven.artifact.ant"&gt;  
-        &lt;aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true"&gt;  
-            &lt;aspectpath&gt;  
-                &lt;pathelement location="${lib.dir}/hashshmash-0.1.0.jar"/&gt;  
-            &lt;/aspectpath&gt;  
-            &lt;inpath&gt;  
-                &lt;pathelement location="${build.dir}/${your_jar_name}.jar"/&gt;  
-            &lt;/inpath&gt;  
-            &lt;classpath&gt;  
-                &lt;pathelement location="${lib.dir}/aspectjrt.jar"/&gt;  
-                &lt;path refid="your.classpath"/&gt;  
-            &lt;/classpath&gt;  
-       &lt;/aspectj:iajc&gt;  
-    &lt;/target&gt;  
-    </nowiki>
+    <target name="aspects" xmlns:artifact="antlib:org.apache.maven.artifact.ant">  
+        <aspectj:iajc outJar="${build.dir}/${your_jar_name}_aj.jar" source="1.6" showWeaveInfo="true">  
+            <aspectpath>  
+                <pathelement location="${lib.dir}/hashshmash-0.1.0.jar"/>  
+            </aspectpath>  
+            <inpath>  
+                <pathelement location="${build.dir}/${your_jar_name}.jar"/>  
+            </inpath>  
+            <classpath>  
+                <pathelement location="${lib.dir}/aspectjrt.jar"/>  
+                <path refid="your.classpath"/>  
+            </classpath>  
+       </aspectj:iajc>  
+    </target>
     
     
 When compiling the aspectjtools.jar should be in ant/lib
@@ -44,11 +42,9 @@ Once you have collected a statistics file by running with aspects, you can gener
     
 or if using ant, there is an ant task
 
-    <nowiki>
     <target name="report" xmlns:report="com.mebigfatguy.hashsmash.report">
         <report:report/>
     </target>
-    </nowiki>
     
     
 HashShmash is available on maven.org
