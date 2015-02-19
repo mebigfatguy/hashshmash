@@ -1,7 +1,7 @@
 /*
  * hashshmash - An aspect to record HashMap/Set allocations
- * Copyright 2013-2014 MeBigFatGuy.com
- * Copyright 2013-2014 Dave Brosius
+ * Copyright 2013-2015 MeBigFatGuy.com
+ * Copyright 2013-2015 Dave Brosius
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
