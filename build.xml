@@ -18,7 +18,7 @@
  */
 -->
 
-<project xmlns:aspectj="antlib:org.aspectj" name="hashshmash" default="info">
+<project name="hashshmash" default="info">
 
     <property file="build.properties"/>
 
@@ -67,7 +67,7 @@
      </target>
 
     <target name="yank" unless="no.yank" depends="-init" xmlns:yank="antlib:com.mebigfatguy.yank" description="pull 3rdparty jars to the lib directory">
-        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" source="true">
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" source="true" separateClassifierTypes="true">
             <server url="http://repo1.maven.org/maven2"/>
         </yank:yank>
 	</target>
@@ -87,8 +87,9 @@
             <classpath refid="hashshmash.classpath" />
         </javac>
     	
-    	<aspectj:iajc source="1.6" sourceroots="${aj.dir}" destDir="${classes.dir}" classpath="${lib.dir}/aspectjrt.jar;${classes.dir}">
-    	</aspectj:iajc>	
+    	<taskdef name="iajc" classname="org.aspectj.tools.ant.taskdefs.AjcTask" classpath="${lib.dir}/aspectjtools.jar"/>
+    	<iajc source="1.6" sourceroots="${aj.dir}" destDir="${classes.dir}" classpath="${lib.dir}/aspectjrt.jar;${classes.dir}">
+    	</iajc>	
     </target>
 
     <target name="jar" depends="-init, yank, compile" description="produces the hashshmash jar file">
