@@ -25,9 +25,10 @@
     <property name="src.dir" value="${basedir}/src"/>
     <property name="aj.dir" value="${basedir}/aj"/>
     <property name="samples.dir" value="${basedir}/samples"/>
-    <property name="classes.dir" value="${basedir}/classes"/>
+	<property name="target.dir" value="${basedir}/target"/>
+    <property name="classes.dir" value="${target.dir}/classes"/>
     <property name="lib.dir" value="${basedir}/lib"/>
-    <property name="javadoc.dir" value="${basedir}/javadoc"/>
+    <property name="javadoc.dir" value="${target.dir}/javadoc"/>
     <property name="javac.source" value="1.6"/>
     <property name="javac.target" value="1.6"/>
     <property name="javac.deprecation" value="on"/>
@@ -42,7 +43,7 @@
         <pathelement location="${lib.dir}/serializer.jar"/>
         <pathelement location="${lib.dir}/ant.jar"/>
         <pathelement location="${lib.dir}/aspectjrt.jar"/>
-    	<pathelement location="${basedir}/hashshmash-${hashshmash.version}.jar"/>
+    	<pathelement location="${target.dir}/hashshmash-${hashshmash.version}.jar"/>
     </path>
 	
     <target name="info">
@@ -54,13 +55,11 @@
     </target>
     
     <target name="clean" description="removes all generated collateral">
-        <delete dir="${classes.dir}"/>
-        <delete dir="${javadoc.dir}"/>
-        <delete file="${basedir}/hashshmash-${hashshmash.version}.jar"/>
-        <delete file="${basedir}/hashshmash-${hashshmash.version}-sources.jar"/>
+        <delete dir="${target.dir}"/>
     </target>
 
     <target name="-init" description="prepares repository for a build">
+    	<mkdir dir="${target.dir}"/>
         <mkdir dir="${classes.dir}"/>
         <mkdir dir="${lib.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
@@ -93,7 +92,7 @@
     </target>
 
     <target name="jar" depends="-init, yank, compile" description="produces the hashshmash jar file">
-        <jar destfile="${basedir}/hashshmash-${hashshmash.version}.jar">
+        <jar destfile="${target.dir}/hashshmash-${hashshmash.version}.jar">
             <fileset dir="${classes.dir}">
                 <include name="**/*.class"/>
                 <include name="**/*.xml"/>
@@ -120,7 +119,7 @@
     </target>
 
     <target name="srczip" description="builds the source distribution zip file">
-        <zip destfile="${basedir}/hashshmash-${hashshmash.version}-sources.jar">
+        <zip destfile="${target.dir}/hashshmash-${hashshmash.version}-sources.jar">
             <fileset dir="${basedir}">
                 <include name="**/*.aj"/>
                 <include name="**/*.java"/>
@@ -156,9 +155,9 @@
     
     <target name="sonatype" depends="release" description="prepare an artifact bundle for sonatype">
         <mkdir dir="${sonatype.dir}"/>
-        <copy todir="${sonatype.dir}" file="${basedir}/hashshmash-${hashshmash.version}.jar"/>
-        <copy tofile="${sonatype.dir}/hashshmash-${hashshmash.version}-sources.jar" file="${basedir}/hashshmash-${hashshmash.version}-sources.jar"/>
-        <jar destfile="${sonatype.dir}/hashshmash-${hashshmash.version}-javadoc.jar" basedir="${basedir}" includes="javadoc/**"/>
+        <copy todir="${sonatype.dir}" file="${target.dir}/hashshmash-${hashshmash.version}.jar"/>
+        <copy tofile="${sonatype.dir}/hashshmash-${hashshmash.version}-sources.jar" file="${target.dir}/hashshmash-${hashshmash.version}-sources.jar"/>
+        <jar destfile="${sonatype.dir}/hashshmash-${hashshmash.version}-javadoc.jar" basedir="${target.dir}" includes="javadoc/**"/>
         <copy tofile="${sonatype.dir}/hashshmash-${hashshmash.version}.pom" file="${basedir}/pom.xml"/>
         
         <exec executable="gpg">
