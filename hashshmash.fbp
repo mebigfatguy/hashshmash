@@ -1,5 +1,5 @@
-<Project projectName="">
-  <Jar>./classes</Jar>
+<Project projectName="hashsmash">
+  <Jar>./target/classes</Jar>
   <AuxClasspathEntry>./lib/aspectjrt.jar</AuxClasspathEntry>
   <AuxClasspathEntry>./lib/aspectjtools.jar</AuxClasspathEntry>
   <AuxClasspathEntry>./lib/hamcrest-core.jar</AuxClasspathEntry>
