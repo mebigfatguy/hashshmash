@@ -1,8 +1,8 @@
 <!--
 /*
  * hashshmash - An aspectj project to evaluate hashCode() distribution effectiveness
- * Copyright 2013 MeBigFatGuy.com
- * Copyright 2013 Dave Brosius
+ * Copyright 2013-2015 MeBigFatGuy.com
+ * Copyright 2013-2015 Dave Brosius
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,7 +140,7 @@
                  destdir="${javadoc.dir}"
                  windowtitle="hashshmash api">
             <doctitle><![CDATA[<h1>hashshmash javadoc</h1>]]></doctitle>
-            <bottom><![CDATA[<i>Copyright &#169; 2013 MeBigFatGuy.com. All Rights Reserved.</i>]]></bottom>
+            <bottom><![CDATA[<i>Copyright &#169; 2013-2015 MeBigFatGuy.com. All Rights Reserved.</i>]]></bottom>
         </javadoc>
     </target>
 
