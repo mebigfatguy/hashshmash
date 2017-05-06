@@ -17,12 +17,11 @@
  */
 package com.mebigfatguy.hashshmash;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +29,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class Journaller implements Runnable {
-    
+
     private static final int SLEEP_TIME = 5 * 1000;
-    
+
     private Field tableField;
-    private ConcurrentHashMap<HashDetails, HashDetails> hDetails = new ConcurrentHashMap<HashDetails, HashDetails>();
+    private ConcurrentHashMap<HashDetails, HashDetails> hDetails = new ConcurrentHashMap<>();
     private PrintWriter writer;
     private boolean operational = false;
 
@@ -43,15 +42,15 @@ public final class Journaller implements Runnable {
             System.out.println("*************************");
             System.out.println("HASHSHMASH ASPECT ENABLED");
             System.out.println("*************************");
-            
+
             tableField = HashMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
-              
-            File dir = new File(System.getProperty("user.home"), ".hashshmash");
-            dir.mkdirs();  
-            
-            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir, new Date() + ".txt")))));
-            
+
+            Path dir = Paths.get(System.getProperty("user.home"), ".hashshmash");
+            Files.createDirectories(dir);
+
+            writer = new PrintWriter(Files.newBufferedWriter(dir.resolve(new Date() + ".txt")));
+
             Thread t = new Thread(this);
             t.setDaemon(true);
             operational = true;
@@ -59,17 +58,19 @@ public final class Journaller implements Runnable {
         } catch (Exception e) {
         }
     }
-    
+
     public void add(HashDetails details) {
-        if (operational)
-            hDetails.put(details,  details);
+        if (operational) {
+            hDetails.put(details, details);
+        }
     }
-    
+
+    @Override
     public void run() {
         try {
             while (!Thread.interrupted()) {
                 Thread.sleep(SLEEP_TIME);
-                
+
                 for (HashDetails details : hDetails.keySet()) {
                     try {
                         Map<?, ?> map = details.getMap();
@@ -77,7 +78,7 @@ public final class Journaller implements Runnable {
                             int newSize = details.getMap().size();
                             if (newSize == details.size) {
                                 try {
-                                    Entry<?, ?>[] table = (Entry<?, ?>[])tableField.get(map);
+                                    Entry<?, ?>[] table = (Entry<?, ?>[]) tableField.get(map);
                                     details.totalSlots = table.length;
                                     for (Entry<?, ?> e : table) {
                                         if (e != null) {
@@ -85,24 +86,27 @@ public final class Journaller implements Runnable {
                                         }
                                     }
                                 } catch (IllegalArgumentException iae) {
-                                    //ConcurrentHashMap doesn't have a table entry
+                                    // ConcurrentHashMap doesn't have a table entry
                                     details.totalSlots = -1;
                                     details.usedSlots = -1;
                                 }
                                 writer.println(details);
                                 hDetails.remove(details);
-                            } else
+                            } else {
                                 details.size = newSize;
+                            }
                         } else {
                             hDetails.remove(details);
                         }
                     } catch (Exception e) {
-                        //might get ConcurrentModificationException or such, just ignore
+                        // might get ConcurrentModificationException or such, just ignore
                     }
                 }
                 writer.flush();
             }
-        } catch (InterruptedException ie) {    
+        } catch (InterruptedException ie) {
+        } finally {
+            writer.close();
         }
     }
 }

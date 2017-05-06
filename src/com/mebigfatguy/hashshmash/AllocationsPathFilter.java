@@ -17,12 +17,14 @@
  */
 package com.mebigfatguy.hashshmash;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Path;
 
-public class AllocationsFileFilter implements FileFilter {
+public class AllocationsPathFilter implements DirectoryStream.Filter<Path> {
+
     @Override
-    public boolean accept(File pathName) {
-        return pathName.getName().endsWith(".txt");
+    public boolean accept(Path entry) throws IOException {
+        return entry.endsWith(".txt");
     }
 }

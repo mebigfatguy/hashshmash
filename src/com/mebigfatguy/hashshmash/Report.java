@@ -22,13 +22,12 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,64 +41,62 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-
 public class Report {
 
     private static final String REPORT_XML = "/com/mebigfatguy/hashshmash/report.xml";
     private static final String REPORT_XSLT = "/com/mebigfatguy/hashshmash/report.xslt";
     private static final String REPORT_CSS = "/com/mebigfatguy/hashshmash/hashshmash.css";
-    
+
     private final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss-SSS");
-    private File directory;
-    
+    private Path directory;
+
     public Report() throws FileNotFoundException {
-        directory = new File(System.getProperty("user.home"), ".hashshmash");
-        if (!directory.isDirectory()) {
+        directory = Paths.get(System.getProperty("user.home"), ".hashshmash");
+        if (!Files.isDirectory(directory)) {
             throw new FileNotFoundException("Directory " + directory + " was not found");
         }
     }
-    
+
     public void generateReports() {
-        for (File f : directory.listFiles(new AllocationsFileFilter())) {          
-            BufferedReader br = null;
-            BufferedWriter bw = null;
-            try {
-                br = new BufferedReader(new FileReader(f));
-                Map<String, Map<String, SiteAllocationInfo>> allocations = generateStatistics(br);
-                File output = new File(f.getParentFile(), f.getName().substring(0, f.getName().lastIndexOf('.')) + ".html");
-                bw = new BufferedWriter(new FileWriter(output));
-                writeReport(bw, f.getName(), allocations);
-                writeCSS(f.getParentFile());
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                closeQuietly(br);
-                closeQuietly(bw);
+        try {
+            for (Path f : Files.newDirectoryStream(directory, new AllocationsPathFilter())) {
+                try (BufferedReader br = Files.newBufferedReader(f)) {
+                    Map<String, Map<String, SiteAllocationInfo>> allocations = generateStatistics(br);
+                    String name = f.getName(-1).toString();
+                    Path output = f.getParent().resolve(name.substring(0, name.lastIndexOf('.')) + ".html");
+                    try (BufferedWriter bw = Files.newBufferedWriter(output)) {
+                        writeReport(bw, name, allocations);
+                    }
+                    writeCSS(f.getParent());
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private Map<String, Map<String, SiteAllocationInfo>> generateStatistics(BufferedReader br) throws IOException, ParseException {
-        Map<String, Map<String, SiteAllocationInfo>> allocations = new HashMap<String, Map<String, SiteAllocationInfo>>();
+        Map<String, Map<String, SiteAllocationInfo>> allocations = new HashMap<>();
         String line;
         while ((line = br.readLine()) != null) {
             String[] elements = line.split("\t");
-            if (elements.length != 6)
+            if (elements.length != 6) {
                 throw new IllegalArgumentException("Invalid input file");
-            
+            }
+
             String type = elements[0];
             Date allocationTime = formatter.parse(elements[1]);
             String location = elements[2];
             int size = Integer.parseInt(elements[3]);
             int buckets = Integer.parseInt(elements[4]);
             int usedBuckets = Integer.parseInt(elements[5]);
-            
+
             Map<String, SiteAllocationInfo> siteInfo = allocations.get(type);
             if (siteInfo == null) {
-                siteInfo = new HashMap<String, SiteAllocationInfo>();
+                siteInfo = new HashMap<>();
                 allocations.put(type, siteInfo);
             }
-            
+
             SiteAllocationInfo info = siteInfo.get(location);
             if (info == null) {
                 info = new SiteAllocationInfo();
@@ -107,53 +104,47 @@ public class Report {
             }
             info.add(allocationTime, size, buckets, usedBuckets);
         }
-        
+
         return allocations;
     }
-    
-    
-    private void writeReport(BufferedWriter bw, String title,
-            Map<String, Map<String, SiteAllocationInfo>> allocations) throws TransformerException, ParserConfigurationException {
+
+    private void writeReport(BufferedWriter bw, String title, Map<String, Map<String, SiteAllocationInfo>> allocations)
+            throws TransformerException, ParserConfigurationException {
 
         InputStream xml = null;
         InputStream xsl = null;
-        
+
         try {
             xml = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_XML));
             xsl = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_XSLT));
-            
+
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer(new StreamSource(xsl));
-            
+
             t.setParameter("title", title);
             t.setParameter("bean", new XSLTBean(allocations));
             t.transform(new StreamSource(xml), new StreamResult(bw));
-            
+
         } finally {
             closeQuietly(xml);
             closeQuietly(xsl);
-        }  
+        }
     }
-    
-    private void writeCSS(File directory) throws IOException {
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-        try {
-            bis = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_CSS));
-            bos = new BufferedOutputStream(new FileOutputStream(new File(directory, "hashshmash.css")));
-            
+
+    private void writeCSS(Path directory) throws IOException {
+
+        try (BufferedInputStream bis = new BufferedInputStream(Report.class.getResourceAsStream(REPORT_CSS));
+                BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(directory.resolve("hashshmash.css")))) {
+
             byte[] buffer = new byte[1024];
             int length = bis.read(buffer);
             while (length >= 0) {
                 bos.write(buffer, 0, length);
                 length = bis.read(buffer);
             }
-        } finally {
-            closeQuietly(bis);
-            closeQuietly(bos);
         }
     }
-    
+
     private static void closeQuietly(Closeable c) {
         try {
             if (c != null) {
@@ -162,9 +153,9 @@ public class Report {
         } catch (Exception e) {
         }
     }
-    
+
     public static void main(String[] args) throws FileNotFoundException {
-        
+
         Report r = new Report();
         r.generateReports();
     }

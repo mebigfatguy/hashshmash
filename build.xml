@@ -29,8 +29,8 @@
     <property name="classes.dir" value="${target.dir}/classes"/>
     <property name="lib.dir" value="${basedir}/lib"/>
     <property name="javadoc.dir" value="${target.dir}/javadoc"/>
-    <property name="javac.source" value="1.6"/>
-    <property name="javac.target" value="1.6"/>
+    <property name="javac.source" value="1.7"/>
+    <property name="javac.target" value="1.7"/>
     <property name="javac.deprecation" value="on"/>
     <property name="javac.debug" value="on"/>
     

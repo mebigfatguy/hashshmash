@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/aspectjrt.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjtools.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjtools.jar" sourcepath="/home/dave/.m2/repository/org/aspectj/aspectjtools/1.8.5/aspectjtools-1.8.5-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
