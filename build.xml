@@ -1,8 +1,8 @@
 <!--
 /*
  * hashshmash - An aspectj project to evaluate hashCode() distribution effectiveness
- * Copyright 2013-2015 MeBigFatGuy.com
- * Copyright 2013-2015 Dave Brosius
+ * Copyright 2013-2024 MeBigFatGuy.com
+ * Copyright 2013-2024 Dave Brosius
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@
 
     <target name="yank" unless="no.yank" depends="-init" xmlns:yank="antlib:com.mebigfatguy.yank" description="pull 3rdparty jars to the lib directory">
         <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" stripVersions="true" source="true" separateClassifierTypes="true">
-            <server url="http://repo1.maven.org/maven2"/>
+            <server url="https://repo1.maven.org/maven2"/>
         </yank:yank>
 	</target>
 	
